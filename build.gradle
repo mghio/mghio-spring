@@ -12,5 +12,7 @@ repositories {
 }
 
 dependencies {
+    compile('dom4j:dom4j:1.6.1')
+
     testCompile('org.junit.jupiter:junit-jupiter-api:5.7.0')
 }
