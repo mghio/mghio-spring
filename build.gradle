@@ -1,0 +1,16 @@
+plugins {
+    id 'java'
+}
+
+group 'cn.mghio'
+version '1.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile('org.junit.jupiter:junit-jupiter-api:5.7.0')
+}
