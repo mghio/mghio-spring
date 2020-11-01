@@ -1,6 +1,7 @@
 package cn.mghio.test.version1;
 
 import cn.mghio.beans.BeanDefinition;
+import cn.mghio.beans.BeanScope;
 import cn.mghio.beans.exception.BeanCreationException;
 import cn.mghio.beans.exception.BeanDefinitionException;
 import cn.mghio.beans.factory.support.DefaultBeanFactory;
@@ -35,9 +36,28 @@ public class BeanFactoryTest {
         reader.loadBeanDefinition(resource);
         BeanDefinition bd = beanFactory.getBeanDefinition("orderService");
 
+        assertTrue(bd.isSingleton());
+        assertFalse(bd.isPrototype());
+        assertEquals(BeanScope.DEFAULT, bd.getScope());
         assertEquals("cn.mghio.service.version1.OrderService", bd.getBeanClassNam());
         OrderService orderService = (OrderService) beanFactory.getBean("orderService");
         assertNotNull(orderService);
+
+        OrderService orderServiceSecond = (OrderService) beanFactory.getBean("orderService");
+        assertEquals(orderService, orderServiceSecond);
+    }
+
+    @Test
+    public void testGetPrototypeBeanFromXmlFile() {
+        reader.loadBeanDefinition(resource);
+        BeanDefinition bd = beanFactory.getBeanDefinition("orderServicePrototype");
+
+        assertFalse(bd.isSingleton());
+        assertTrue(bd.isPrototype());
+        OrderService orderService = (OrderService) beanFactory.getBean("orderServicePrototype");
+        assertNotNull(orderService);
+        OrderService orderServiceSecond = (OrderService) beanFactory.getBean("orderServicePrototype");
+        assertNotEquals(orderService, orderServiceSecond);
     }
 
     @Test

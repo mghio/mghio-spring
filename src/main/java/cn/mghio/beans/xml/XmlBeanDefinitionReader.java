@@ -5,7 +5,6 @@ import cn.mghio.beans.exception.BeanDefinitionException;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
 import cn.mghio.beans.support.GenericBeanDefinition;
 import cn.mghio.core.io.Resource;
-import cn.mghio.utils.ClassUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -25,6 +24,7 @@ public class XmlBeanDefinitionReader {
 
     private static final String BEAN_ID_ATTRIBUTE = "id";
     private static final String BEAN_CLASS_ATTRIBUTE = "class";
+    private static final String BEAN_SCOPE_ATTRIBUTE = "scope";
 
     private BeanDefinitionRegistry registry;
 
@@ -44,6 +44,9 @@ public class XmlBeanDefinitionReader {
                 String beanId = element.attributeValue(BEAN_ID_ATTRIBUTE);
                 String beanClassName = element.attributeValue(BEAN_CLASS_ATTRIBUTE);
                 BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
+                if (null != element.attributeValue(BEAN_SCOPE_ATTRIBUTE)) {
+                    bd.setScope(element.attributeValue(BEAN_SCOPE_ATTRIBUTE));
+                }
                 this.registry.registerBeanDefinition(beanId, bd);
             }
         } catch (DocumentException | IOException e) {

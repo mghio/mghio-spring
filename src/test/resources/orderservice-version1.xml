@@ -6,4 +6,6 @@
 
     <bean id="orderService" class="cn.mghio.service.version1.OrderService" />
 
+    <bean id="orderServicePrototype" scope="prototype" class="cn.mghio.service.version1.OrderService" />
+
 </beans>

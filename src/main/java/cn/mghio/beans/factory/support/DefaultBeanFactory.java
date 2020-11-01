@@ -2,29 +2,18 @@ package cn.mghio.beans.factory.support;
 
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.exception.BeanCreationException;
-import cn.mghio.beans.exception.BeanDefinitionException;
 import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
-import cn.mghio.beans.support.GenericBeanDefinition;
 import cn.mghio.utils.ClassUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import static com.sun.org.apache.xml.internal.security.utils.Constants.configurationFile;
 
 /**
  * @author mghio
  * @since 2020-10-31
  */
-public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
+public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     private ClassLoader classLoader = null;
 
@@ -39,8 +28,20 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefiniti
     public Object getBean(String beanId) {
         BeanDefinition bd = getBeanDefinition(beanId);
         if (null == bd) {
-            throw new BeanCreationException("BeanDefinition does not exists, beanId:" + beanId);
+            return null;
         }
+        if (bd.isSingleton()) {
+            Object bean = this.getSingleton(beanId);
+            if (null == bean) {
+                bean = this.doCreateBean(bd);
+                this.registerSingleton(beanId, bean);
+            }
+            return bean;
+        }
+        return this.doCreateBean(bd);
+    }
+
+    private Object doCreateBean(BeanDefinition bd) {
         ClassLoader classLoader = this.getClassLoader();
         String beanClassName = bd.getBeanClassNam();
         try {

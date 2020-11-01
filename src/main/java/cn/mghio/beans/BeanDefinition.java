@@ -8,4 +8,11 @@ public interface BeanDefinition {
 
     String getBeanClassNam();
 
+    boolean isSingleton();
+
+    boolean isPrototype();
+
+    BeanScope getScope();
+
+    void setScope(String scope);
 }
