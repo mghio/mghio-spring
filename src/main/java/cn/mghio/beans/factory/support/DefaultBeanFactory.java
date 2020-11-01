@@ -3,7 +3,8 @@ package cn.mghio.beans.factory.support;
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.exception.BeanCreationException;
 import cn.mghio.beans.exception.BeanDefinitionException;
-import cn.mghio.beans.factory.BeanFactory;
+import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
+import cn.mghio.beans.support.BeanDefinitionRegistry;
 import cn.mghio.beans.support.GenericBeanDefinition;
 import cn.mghio.utils.ClassUtils;
 import org.dom4j.Document;
@@ -23,16 +24,15 @@ import static com.sun.org.apache.xml.internal.security.utils.Constants.configura
  * @author mghio
  * @since 2020-10-31
  */
-public class DefaultBeanFactory implements BeanFactory {
+public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
-    private static final String BEAN_ID_ATTRIBUTE = "id";
-    private static final String BEAN_CLASS_ATTRIBUTE = "class";
+    private ClassLoader classLoader = null;
 
     // <beanId, BeanDefinition>
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>(256);
 
-    public DefaultBeanFactory(String configFileLocation) {
-        loadBeanDefinition(configFileLocation);
+    public DefaultBeanFactory() {
+
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DefaultBeanFactory implements BeanFactory {
         if (null == bd) {
             throw new BeanCreationException("BeanDefinition does not exists, beanId:" + beanId);
         }
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
+        ClassLoader classLoader = this.getClassLoader();
         String beanClassName = bd.getBeanClassNam();
         try {
             Class<?> clazz = classLoader.loadClass(beanClassName);
@@ -61,23 +61,13 @@ public class DefaultBeanFactory implements BeanFactory {
         return beanDefinitionMap.get(beanId);
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadBeanDefinition(String configFileLocation) {
-        ClassLoader classLoader = ClassUtils.getDefaultClassLoader();
-        try (InputStream is = classLoader.getResourceAsStream(configFileLocation)) {
-            SAXReader saxReader = new SAXReader();
-            Document document = saxReader.read(is);
-            Element root = document.getRootElement();  // <beans>
-            Iterator<Element> iterator = root.elementIterator();
-            while (iterator.hasNext()) {
-                Element element = iterator.next();
-                String beanId = element.attributeValue(BEAN_ID_ATTRIBUTE);
-                String beanClassName = element.attributeValue(BEAN_CLASS_ATTRIBUTE);
-                BeanDefinition bd = new GenericBeanDefinition(beanId, beanClassName);
-                this.registerBeanDefinition(beanId, bd);
-            }
-        } catch (DocumentException | IOException e) {
-            throw new BeanDefinitionException("IOException parsing XML document:" + configurationFile, e);
-        }
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return (null != classLoader) ? classLoader : ClassUtils.getDefaultClassLoader();
     }
 }
