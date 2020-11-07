@@ -1,9 +1,6 @@
 package cn.mghio.beans.xml;
 
-import cn.mghio.beans.BeanDefinition;
-import cn.mghio.beans.PropertyValue;
-import cn.mghio.beans.RuntimeBeanReference;
-import cn.mghio.beans.TypedStringValue;
+import cn.mghio.beans.*;
 import cn.mghio.beans.exception.BeanDefinitionException;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
 import cn.mghio.beans.support.GenericBeanDefinition;
@@ -31,6 +28,8 @@ public class XmlBeanDefinitionReader {
     public static final String REF_ATTRIBUTE = "ref";
     public static final String VALUE_ATTRIBUTE = "value";
     public static final String NAME_ATTRIBUTE = "name";
+    public static final String CONSTRUCTOR_ARG_ELEMENT = "constructor-arg";
+    public static final String TYPE_ATTRIBUTE = "type";
 
     private BeanDefinitionRegistry registry;
 
@@ -53,7 +52,8 @@ public class XmlBeanDefinitionReader {
                 if (null != element.attributeValue(BEAN_SCOPE_ATTRIBUTE)) {
                     bd.setScope(element.attributeValue(BEAN_SCOPE_ATTRIBUTE));
                 }
-                parsePropertyElementValue(element, bd);
+                parseConstructorArgElements(element, bd);
+                parsePropertyElementValues(element, bd);
                 this.registry.registerBeanDefinition(beanId, bd);
             }
         } catch (DocumentException | IOException e) {
@@ -61,7 +61,29 @@ public class XmlBeanDefinitionReader {
         }
     }
 
-    private void parsePropertyElementValue(Element element, BeanDefinition bd) {
+    private void parseConstructorArgElements(Element rootEle, BeanDefinition bd) {
+        Iterator<Element> iterator = rootEle.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
+        while (iterator.hasNext()) {
+            Element element = iterator.next();
+            parseConstructorArgElement(element, bd);
+        }
+    }
+
+    private void parseConstructorArgElement(Element element, BeanDefinition bd) {
+        String typeAttr = element.attributeValue(TYPE_ATTRIBUTE);
+        String nameAttr = element.attributeValue(NAME_ATTRIBUTE);
+        Object value = parsePropertyElementValue(element, null);
+        ConstructorArgument.ValueHolder valueHolder = new ConstructorArgument.ValueHolder(value);
+        if (StringUtils.hasLength(typeAttr)) {
+            valueHolder.setType(typeAttr);
+        }
+        if (StringUtils.hasLength(nameAttr)) {
+            valueHolder.setType(nameAttr);
+        }
+        bd.getConstructorArgument().addArgumentValue(valueHolder);
+    }
+
+    private void parsePropertyElementValues(Element element, BeanDefinition bd) {
         Iterator<Element> iterator = element.elementIterator(PROPERTY_ATTRIBUTE);
         while (iterator.hasNext()) {
             Element propertyElement = iterator.next();

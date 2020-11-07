@@ -8,8 +8,20 @@ package cn.mghio.beans.exception;
  */
 public class BeanCreationException extends BeansException {
 
+    private String beanName;
+
     public BeanCreationException(String message) {
         super(message);
+    }
+
+    public BeanCreationException(String message, String beanName) {
+        super("Error creating bean with name '" + beanName + "':" + message);
+        this.beanName = beanName;
+    }
+
+    public BeanCreationException(String message, String beanName, Throwable cause) {
+        super("Error creating bean with name '" + beanName + "':" + message, cause);
+        this.beanName = beanName;
     }
 
     public BeanCreationException(String message, Throwable cause) {

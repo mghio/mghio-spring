@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.e3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="stockService" class="cn.mghio.dao.version3.StockService"/>
+
+    <bean id="tradeService" class="cn.mghio.dao.version3.TradeService"/>
+
+    <bean id="orderService" class="cn.mghio.service.version3.OrderService">
+        <constructor-arg ref="stockService"/>
+        <constructor-arg ref="tradeService"/>
+        <constructor-arg type="java.lang.String" value="mghio"/>
+    </bean>
+</beans>

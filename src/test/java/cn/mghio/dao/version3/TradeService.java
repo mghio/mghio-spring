@@ -1,4 +1,4 @@
-package cn.mghio.dao.version2;
+package cn.mghio.dao.version3;
 
 import lombok.NoArgsConstructor;
 

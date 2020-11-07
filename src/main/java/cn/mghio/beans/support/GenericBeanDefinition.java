@@ -2,6 +2,7 @@ package cn.mghio.beans.support;
 
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.BeanScope;
+import cn.mghio.beans.ConstructorArgument;
 import cn.mghio.beans.PropertyValue;
 
 import java.util.ArrayList;
@@ -19,12 +20,18 @@ public class GenericBeanDefinition implements BeanDefinition {
 
     private BeanScope scope = BeanScope.DEFAULT;
 
-
     private List<PropertyValue> propertyValues = new ArrayList<>();
+
+    private ConstructorArgument constructorArgument = new ConstructorArgument();
 
     public GenericBeanDefinition(String beanId, String beanClassName) {
         this.beanId = beanId;
         this.beanClassName = beanClassName;
+    }
+
+    @Override
+    public String getId() {
+        return this.beanId;
     }
 
     @Override
@@ -57,4 +64,13 @@ public class GenericBeanDefinition implements BeanDefinition {
         return this.propertyValues;
     }
 
+    @Override
+    public ConstructorArgument getConstructorArgument() {
+        return this.constructorArgument;
+    }
+
+    @Override
+    public boolean hasConstructorArguments() {
+        return !this.constructorArgument.isEmpty();
+    }
 }

@@ -1,18 +1,18 @@
-package cn.mghio.service.version2;
+package cn.mghio.service.version3;
 
-import cn.mghio.dao.version2.StockService;
-import cn.mghio.dao.version2.TradeService;
+import cn.mghio.dao.version3.StockService;
+import cn.mghio.dao.version3.TradeService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 /**
  * @author mghio
- * @since 2020-11-05
+ * @since 2020-11-07
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderService {
 
     private StockService stockService;
@@ -20,8 +20,4 @@ public class OrderService {
     private TradeService tradeService;
 
     private String owner;
-
-    private Integer num;
-
-    private Date orderTime;
 }

@@ -8,6 +8,8 @@ import java.util.List;
  */
 public interface BeanDefinition {
 
+    String getId();
+
     String getBeanClassName();
 
     boolean isSingleton();
@@ -19,4 +21,8 @@ public interface BeanDefinition {
     void setScope(String scope);
 
     List<PropertyValue> getPropertyValues();
+
+    ConstructorArgument getConstructorArgument();
+
+    boolean hasConstructorArguments();
 }

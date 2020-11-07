@@ -6,12 +6,11 @@ import cn.mghio.beans.SimpleTypeConverted;
 import cn.mghio.beans.exception.BeanCreationException;
 import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
-import cn.mghio.beans.support.BeanDefinitionResolver;
+import cn.mghio.beans.support.BeanDefinitionValueResolver;
+import cn.mghio.beans.support.ConstructorResolver;
 import cn.mghio.utils.ClassUtils;
+import org.apache.commons.beanutils.BeanUtils;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
             return;
         }
 
-        BeanDefinitionResolver resolver = new BeanDefinitionResolver(this);
+        BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
         SimpleTypeConverted converter = new SimpleTypeConverted();
         try {
             for (PropertyValue propertyValue : propertyValues) {
@@ -71,7 +70,8 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
                 Object originalValue = propertyValue.getValue();
                 Object resolvedValue = resolver.resolveValueIfNecessary(originalValue);
 
-                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                // 1. use java beans
+                /*BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
                 PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                     if (propertyDescriptor.getName().equals(propertyName)) {
@@ -80,7 +80,10 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
                         propertyDescriptor.getWriteMethod().invoke(bean, convertedValue);
                         break;
                     }
-                }
+                }*/
+
+                // 2. use BeanUtils
+                BeanUtils.copyProperty(bean, propertyName, resolvedValue);
             }
         } catch (Exception e) {
             throw new BeanCreationException("Failed to obtain BeanInfo for class [" + bd.getBeanClassName() + "]");
@@ -88,13 +91,18 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
     }
 
     private Object instantiateBean(BeanDefinition bd) {
-        ClassLoader classLoader = this.getClassLoader();
-        String beanClassName = bd.getBeanClassName();
-        try {
-            Class<?> clazz = classLoader.loadClass(beanClassName);
-            return clazz.newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new BeanCreationException("Created bean for " + beanClassName + " fail.", e);
+        if (bd.hasConstructorArguments()) {
+            ConstructorResolver constructorResolver = new ConstructorResolver(this);
+            return constructorResolver.autowireConstructor(bd);
+        } else {
+            ClassLoader classLoader = this.getClassLoader();
+            String beanClassName = bd.getBeanClassName();
+            try {
+                Class<?> clazz = classLoader.loadClass(beanClassName);
+                return clazz.newInstance();
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                throw new BeanCreationException("Created bean for " + beanClassName + " fail.", e);
+            }
         }
     }
 

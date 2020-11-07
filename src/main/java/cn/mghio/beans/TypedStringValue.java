@@ -1,18 +1,16 @@
 package cn.mghio.beans;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author mghio
  * @since 2020-11-07
  */
+@Getter
+@AllArgsConstructor
 public class TypedStringValue {
 
     private final String value;
 
-    public TypedStringValue(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
 }

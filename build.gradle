@@ -13,6 +13,9 @@ repositories {
 
 dependencies {
     compile('dom4j:dom4j:1.6.1')
+    compile('commons-beanutils:commons-beanutils:1.9.3')
+    compile('org.projectlombok:lombok:1.18.16')
 
     testCompile('org.junit.jupiter:junit-jupiter-api:5.7.0')
+    implementation 'junit:junit:4.12'
 }

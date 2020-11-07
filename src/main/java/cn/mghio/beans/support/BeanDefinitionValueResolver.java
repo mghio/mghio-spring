@@ -8,11 +8,11 @@ import cn.mghio.beans.factory.support.DefaultBeanFactory;
  * @author mghio
  * @since 2020-11-07
  */
-public class BeanDefinitionResolver {
+public class BeanDefinitionValueResolver {
 
     private final DefaultBeanFactory factory;
 
-    public BeanDefinitionResolver(DefaultBeanFactory factory) {
+    public BeanDefinitionValueResolver(DefaultBeanFactory factory) {
         this.factory = factory;
     }
 
