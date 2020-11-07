@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.e3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="stockService" class="cn.mghio.dao.version2.StockService"/>
+
+    <bean id="tradeService" class="cn.mghio.dao.version2.TradeService"/>
+
+    <bean id="orderService" class="cn.mghio.service.version2.OrderService">
+        <property name="stockService" ref="stockService"/>
+        <property name="tradeService" ref="tradeService"/>
+        <property name="num" value="2"/>
+        <property name="owner" value="mghio"/>
+        <property name="orderTime" value="2020-11-07 18:42:32"/>
+    </bean>
+
+</beans>

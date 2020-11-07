@@ -13,9 +13,9 @@ import java.io.InputStream;
  */
 public class FileSystemResource implements Resource {
 
-    private String path;
+    private final String path;
 
-    private File file;
+    private final File file;
 
     public FileSystemResource(String path) {
         Assert.notNull(path, "file path must not be null");

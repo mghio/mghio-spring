@@ -2,6 +2,10 @@ package cn.mghio.beans.support;
 
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.BeanScope;
+import cn.mghio.beans.PropertyValue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author mghio
@@ -15,13 +19,16 @@ public class GenericBeanDefinition implements BeanDefinition {
 
     private BeanScope scope = BeanScope.DEFAULT;
 
+
+    private List<PropertyValue> propertyValues = new ArrayList<>();
+
     public GenericBeanDefinition(String beanId, String beanClassName) {
         this.beanId = beanId;
         this.beanClassName = beanClassName;
     }
 
     @Override
-    public String getBeanClassNam() {
+    public String getBeanClassName() {
         return this.beanClassName;
     }
 
@@ -43,6 +50,11 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public void setScope(String scope) {
         this.scope = BeanScope.of(scope);
+    }
+
+    @Override
+    public List<PropertyValue> getPropertyValues() {
+        return this.propertyValues;
     }
 
 }

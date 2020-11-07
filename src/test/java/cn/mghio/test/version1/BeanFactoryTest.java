@@ -39,7 +39,7 @@ public class BeanFactoryTest {
         assertTrue(bd.isSingleton());
         assertFalse(bd.isPrototype());
         assertEquals(BeanScope.DEFAULT, bd.getScope());
-        assertEquals("cn.mghio.service.version1.OrderService", bd.getBeanClassNam());
+        assertEquals("cn.mghio.service.version1.OrderService", bd.getBeanClassName());
         OrderService orderService = (OrderService) beanFactory.getBean("orderService");
         assertNotNull(orderService);
 

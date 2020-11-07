@@ -1,12 +1,14 @@
 package cn.mghio.beans;
 
+import java.util.List;
+
 /**
  * @author mghio
  * @since 2020-10-31
  */
 public interface BeanDefinition {
 
-    String getBeanClassNam();
+    String getBeanClassName();
 
     boolean isSingleton();
 
@@ -15,4 +17,6 @@ public interface BeanDefinition {
     BeanScope getScope();
 
     void setScope(String scope);
+
+    List<PropertyValue> getPropertyValues();
 }
