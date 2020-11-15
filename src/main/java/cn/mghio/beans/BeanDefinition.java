@@ -25,4 +25,8 @@ public interface BeanDefinition {
     ConstructorArgument getConstructorArgument();
 
     boolean hasConstructorArguments();
+
+    Class<?> getBeanClass();
+
+    void setBeanClass(Class<?> beanClass);
 }

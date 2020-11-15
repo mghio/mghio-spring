@@ -9,6 +9,7 @@ import cn.mghio.beans.factory.support.DefaultBeanFactory;
 import cn.mghio.utils.ClassUtils;
 import cn.mghio.utils.StringUtils;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  * @author mghio
  * @since 2020-11-07
  */
+@ToString
 @AllArgsConstructor
 public class ConstructorResolver {
 
@@ -28,7 +30,11 @@ public class ConstructorResolver {
 
         Class<?> beanClass = null;
         try {
-            beanClass = this.beanFactory.getClassLoader().loadClass(bd.getBeanClassName());
+            beanClass = bd.getBeanClass();
+            if (beanClass == null) {
+                beanClass = this.beanFactory.getClassLoader().loadClass(bd.getBeanClassName());
+                bd.setBeanClass(beanClass);
+            }
         } catch (ClassNotFoundException e) {
             throw new BeanCreationException(bd.getId(), "Instantiation of bean failed, can't resolve constructor");
         }

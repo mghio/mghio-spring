@@ -20,6 +20,8 @@ public class GenericBeanDefinition implements BeanDefinition {
 
     private BeanScope scope = BeanScope.DEFAULT;
 
+    private Class<?> beanClass;
+
     private List<PropertyValue> propertyValues = new ArrayList<>();
 
     private ConstructorArgument constructorArgument = new ConstructorArgument();
@@ -72,5 +74,15 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public boolean hasConstructorArguments() {
         return !this.constructorArgument.isEmpty();
+    }
+
+    @Override
+    public Class<?> getBeanClass() {
+        return this.beanClass;
+    }
+
+    @Override
+    public void setBeanClass(Class<?> beanClass) {
+        this.beanClass = beanClass;
     }
 }

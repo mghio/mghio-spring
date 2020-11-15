@@ -11,6 +11,7 @@ import cn.mghio.beans.support.ConstructorResolver;
 import cn.mghio.utils.ClassUtils;
 import org.apache.commons.beanutils.BeanUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,9 +99,16 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
             ClassLoader classLoader = this.getClassLoader();
             String beanClassName = bd.getBeanClassName();
             try {
-                Class<?> clazz = classLoader.loadClass(beanClassName);
-                return clazz.newInstance();
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                Class<?> beanClass = null;
+                Class<?> cacheBeanClass = bd.getBeanClass();
+                if (cacheBeanClass == null) {
+                    beanClass = classLoader.loadClass(beanClassName);
+                    bd.setBeanClass(beanClass);
+                } else {
+                    beanClass = cacheBeanClass;
+                }
+                return beanClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
                 throw new BeanCreationException("Created bean for " + beanClassName + " fail.", e);
             }
         }
