@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     compile('dom4j:dom4j:1.6.1')
+    compile('org.ow2.asm:asm:7.1')
     compile('commons-beanutils:commons-beanutils:1.9.3')
     compile('org.projectlombok:lombok:1.18.16')
 

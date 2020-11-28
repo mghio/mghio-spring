@@ -10,6 +10,8 @@ public interface BeanDefinition {
 
     String getId();
 
+    void setId(String id);
+
     String getBeanClassName();
 
     boolean isSingleton();
@@ -29,4 +31,6 @@ public interface BeanDefinition {
     Class<?> getBeanClass();
 
     void setBeanClass(Class<?> beanClass);
+
+    void setBeanClassName(String beanClassName);
 }

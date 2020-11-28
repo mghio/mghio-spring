@@ -1,7 +1,7 @@
 package cn.mghio.service.version2;
 
-import cn.mghio.dao.version2.StockService;
-import cn.mghio.dao.version2.TradeService;
+import cn.mghio.dao.version2.StockDao;
+import cn.mghio.dao.version2.TradeDao;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,9 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 public class OrderService {
 
-    private StockService stockService;
+    private StockDao stockDao;
 
-    private TradeService tradeService;
+    private TradeDao tradeDao;
 
     private String owner;
 

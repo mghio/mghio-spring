@@ -5,8 +5,6 @@ import cn.mghio.context.support.ClassPathApplicationContext;
 import cn.mghio.service.version2.OrderService;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -20,8 +18,8 @@ public class ApplicationContextTestV2 {
         ApplicationContext ctx = new ClassPathApplicationContext("orderservice-version2.xml");
         OrderService orderService = (OrderService) ctx.getBean("orderService");
 
-        assertNotNull(orderService.getStockService());
-        assertNotNull(orderService.getTradeService());
+        assertNotNull(orderService.getStockDao());
+        assertNotNull(orderService.getTradeDao());
         assertNotNull(orderService.getOrderTime());
 
         assertEquals(2, orderService.getNum());

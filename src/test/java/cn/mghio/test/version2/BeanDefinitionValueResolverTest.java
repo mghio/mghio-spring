@@ -6,7 +6,7 @@ import cn.mghio.beans.factory.support.DefaultBeanFactory;
 import cn.mghio.beans.support.BeanDefinitionValueResolver;
 import cn.mghio.beans.xml.XmlBeanDefinitionReader;
 import cn.mghio.core.io.ClassPathResource;
-import cn.mghio.dao.version2.TradeService;
+import cn.mghio.dao.version2.TradeDao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +47,7 @@ public class BeanDefinitionValueResolverTest {
         Object value = resolver.resolveValueIfNecessary(reference);
 
         assertNotNull(value);
-        assertTrue(value instanceof TradeService);
+        assertTrue(value instanceof TradeDao);
     }
 
 }

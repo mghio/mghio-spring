@@ -30,8 +30,8 @@ public class ConstructorResolverTestV3 {
         OrderService orderService = (OrderService) resolver.autowireConstructor(bd);
 
         assertEquals("mghio", orderService.getOwner());
-        assertNotNull(orderService.getStockService());
-        assertNotNull(orderService.getTradeService());
+        assertNotNull(orderService.getStockDao());
+        assertNotNull(orderService.getTradeDao());
     }
 
 }

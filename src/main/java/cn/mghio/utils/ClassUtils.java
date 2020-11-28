@@ -11,6 +11,14 @@ import java.util.Map;
  */
 public class ClassUtils {
 
+    private static final char PACKAGE_SEPARATOR = '.';
+
+    private static final char PATH_SEPARATOR = '/';
+
+    private static final char INNER_CLASS_SEPARATOR = '$';
+
+    public static final String CGLIB_CLASS_SEPARATOR = "$$";
+
     private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new HashMap<>(8);
 
     static {
@@ -66,4 +74,25 @@ public class ClassUtils {
         }
     }
 
+    public static String convertResourcePathToClassName(String className) {
+        Assert.notNull(className, "class name must not be null");
+        return className.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
+    }
+
+    public static String convertClassNameToResourcePath(String classPath) {
+        Assert.notNull(classPath, "class path must not be null");
+        return classPath.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);
+    }
+
+    public static String getShortName(String className) {
+        Assert.notNull(className, "class name must not be null");
+        int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR);
+        int nameEndIndex = className.indexOf(CGLIB_CLASS_SEPARATOR);
+        if (nameEndIndex == -1) {
+            nameEndIndex = className.length();
+        }
+        String shortName = className.substring(lastDotIndex + 1, nameEndIndex);
+        shortName = shortName.replace(INNER_CLASS_SEPARATOR, PATH_SEPARATOR);
+        return shortName;
+    }
 }

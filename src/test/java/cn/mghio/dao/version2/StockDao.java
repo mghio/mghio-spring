@@ -1,4 +1,4 @@
-package cn.mghio.dao.version3;
+package cn.mghio.dao.version2;
 
 import lombok.NoArgsConstructor;
 
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
  * @since 2020-11-05
  */
 @NoArgsConstructor
-public class TradeService {
+public class StockDao {
 
 }

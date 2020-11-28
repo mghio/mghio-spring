@@ -1,5 +1,10 @@
 package cn.mghio.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.StringTokenizer;
+
 /**
  * @author mghio
  * @since 2020-11-06
@@ -40,5 +45,36 @@ public abstract class StringUtils {
             }
         }
         return sb.toString();
+    }
+
+    public static String[] tokenizeToStringArray(String str, String delimiters) {
+        return tokenizeToStringArray(str, delimiters, true, true);
+    }
+
+    private static String[] tokenizeToStringArray(String str, String delimiters, boolean trimTokens, boolean ignoreEmptyTokens) {
+        if (str == null) {
+            return null;
+        }
+
+        StringTokenizer tokenizer = new StringTokenizer(str, delimiters);
+        List<String> tokens = new ArrayList<>();
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken();
+            if (trimTokens) {
+                token = token.trim();
+            }
+            if (!ignoreEmptyTokens || token.length() > 0) {
+                tokens.add(token);
+            }
+        }
+
+        return toStringArray(tokens);
+    }
+
+    private static String[] toStringArray(Collection<String> collection) {
+        if (collection == null) {
+            return null;
+        }
+        return collection.toArray(new String[0]);
     }
 }

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
  * @since 2020-11-05
  */
 @NoArgsConstructor
-public class StockService {
+public class TradeDao {
 
 }

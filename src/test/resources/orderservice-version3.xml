@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="stockService" class="cn.mghio.dao.version3.StockService"/>
+    <bean id="stockService" class="cn.mghio.dao.version3.StockDao"/>
 
-    <bean id="tradeService" class="cn.mghio.dao.version3.TradeService"/>
+    <bean id="tradeService" class="cn.mghio.dao.version3.TradeDao"/>
 
     <bean id="orderService" class="cn.mghio.service.version3.OrderService">
         <constructor-arg ref="stockService"/>
