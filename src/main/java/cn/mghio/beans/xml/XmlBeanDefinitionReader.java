@@ -106,7 +106,7 @@ public class XmlBeanDefinitionReader {
             valueHolder.setType(typeAttr);
         }
         if (StringUtils.hasLength(nameAttr)) {
-            valueHolder.setType(nameAttr);
+            valueHolder.setName(nameAttr);
         }
         bd.getConstructorArgument().addArgumentValue(valueHolder);
     }
