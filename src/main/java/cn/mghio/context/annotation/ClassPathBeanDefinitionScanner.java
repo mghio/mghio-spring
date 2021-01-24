@@ -23,11 +23,11 @@ public class ClassPathBeanDefinitionScanner {
 
     public static final String SEMICOLON_SEPARATOR = ",";
 
-    private BeanDefinitionRegistry registry;
+    private final BeanDefinitionRegistry registry;
 
-    private PackageResourceLoader resourceLoader = new PackageResourceLoader();
+    private final PackageResourceLoader resourceLoader = new PackageResourceLoader();
 
-    private BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
+    private final BeanNameGenerator beanNameGenerator = new AnnotationBeanNameGenerator();
 
     public ClassPathBeanDefinitionScanner(BeanDefinitionRegistry registry) {
         this.registry = registry;
