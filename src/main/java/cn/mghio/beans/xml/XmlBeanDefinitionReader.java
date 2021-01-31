@@ -56,7 +56,6 @@ public class XmlBeanDefinitionReader {
                 } else if (this.isContextNamespace(namespaceUri)) {
                     parseComponentElement(element);
                 }
-                parseDefaultElement(element);
             }
         } catch (DocumentException | IOException e) {
             throw new BeanDefinitionException("IOException parsing XML document:" + resource, e);

@@ -2,19 +2,20 @@ package cn.mghio.beans.factory.support;
 
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.PropertyValue;
-import cn.mghio.beans.SimpleTypeConverted;
 import cn.mghio.beans.exception.BeanCreationException;
+import cn.mghio.beans.factory.config.BeanPostProcessor;
 import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
+import cn.mghio.beans.factory.config.DependencyDescriptor;
+import cn.mghio.beans.factory.config.InstantiationAwareBeanProcessor;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
 import cn.mghio.beans.support.BeanDefinitionValueResolver;
 import cn.mghio.beans.support.ConstructorResolver;
 import cn.mghio.utils.ClassUtils;
-import org.apache.commons.beanutils.BeanUtils;
-
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.beanutils.BeanUtils;
 
 /**
  * @author mghio
@@ -27,6 +28,8 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
 
     // <beanId, BeanDefinition>
     private final Map<String, BeanDefinition> beanDefinitionMap = new HashMap<>(256);
+
+    private final List<BeanPostProcessor> beanPostProcessors = new ArrayList<>();
 
     public DefaultBeanFactory() {
 
@@ -58,13 +61,18 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
     }
 
     private void populateBean(BeanDefinition bd, Object bean) {
+        for (BeanPostProcessor postProcessor : this.getBeanPostProcessors()) {
+            if (postProcessor instanceof InstantiationAwareBeanProcessor) {
+                ((InstantiationAwareBeanProcessor) postProcessor).postProcessPropertyValues(bean, bd.getId());
+            }
+        }
+
         List<PropertyValue> propertyValues = bd.getPropertyValues();
         if (propertyValues == null || propertyValues.isEmpty()) {
             return;
         }
 
         BeanDefinitionValueResolver resolver = new BeanDefinitionValueResolver(this);
-        SimpleTypeConverted converter = new SimpleTypeConverted();
         try {
             for (PropertyValue propertyValue : propertyValues) {
                 String propertyName = propertyValue.getName();
@@ -72,7 +80,8 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
                 Object resolvedValue = resolver.resolveValueIfNecessary(originalValue);
 
                 // 1. use java beans
-                /*BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
+                /*SimpleTypeConverted converter = new SimpleTypeConverted();
+                BeanInfo beanInfo = Introspector.getBeanInfo(bean.getClass());
                 PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
                 for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
                     if (propertyDescriptor.getName().equals(propertyName)) {
@@ -132,5 +141,42 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
     @Override
     public ClassLoader getClassLoader() {
         return (null != classLoader) ? classLoader : ClassUtils.getDefaultClassLoader();
+    }
+
+    @Override
+    public void addBeanPostProcessor(BeanPostProcessor processor) {
+        this.beanPostProcessors.add(processor);
+    }
+
+    @Override
+    public List<BeanPostProcessor> getBeanPostProcessors() {
+        return this.beanPostProcessors;
+    }
+
+    @Override
+    public Object resolveDependency(DependencyDescriptor descriptor) {
+        Class<?> typeToMatch = descriptor.getDependencyType();
+        for (BeanDefinition bd : this.beanDefinitionMap.values()) {
+            // note: make sure beanClass field has value
+            resolveClass(bd);
+            Class<?> beanClass = bd.getBeanClass();
+            if (typeToMatch.isAssignableFrom(beanClass)) {
+                return this.getBean(bd.getId());
+            }
+        }
+
+        return null;
+    }
+
+    private void resolveClass(BeanDefinition bd) {
+        if (bd.hasBeanClass()) {
+            return;
+        }
+
+        try {
+            bd.resolveBeanClass(this.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("can't load class: " + bd.getBeanClassName());
+        }
     }
 }

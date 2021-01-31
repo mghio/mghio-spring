@@ -22,9 +22,9 @@ public class GenericBeanDefinition implements BeanDefinition {
 
     private Class<?> beanClass;
 
-    private List<PropertyValue> propertyValues = new ArrayList<>();
+    private final List<PropertyValue> propertyValues = new ArrayList<>();
 
-    private ConstructorArgument constructorArgument = new ConstructorArgument();
+    private final ConstructorArgument constructorArgument = new ConstructorArgument();
 
     public GenericBeanDefinition() {
     }
@@ -97,5 +97,21 @@ public class GenericBeanDefinition implements BeanDefinition {
     @Override
     public void setBeanClassName(String beanClassName) {
         this.beanClassName = beanClassName;
+    }
+
+    @Override
+    public Class<?> resolveBeanClass(ClassLoader classLoader) throws ClassNotFoundException {
+        String className = this.getBeanClassName();
+        if (className == null) {
+            return null;
+        }
+        Class<?> resolvedClass = classLoader.loadClass(className);
+        this.beanClass = resolvedClass;
+        return resolvedClass;
+    }
+
+    @Override
+    public boolean hasBeanClass() {
+        return this.beanClass != null;
     }
 }

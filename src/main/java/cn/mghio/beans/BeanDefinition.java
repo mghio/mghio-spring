@@ -33,4 +33,8 @@ public interface BeanDefinition {
     void setBeanClass(Class<?> beanClass);
 
     void setBeanClassName(String beanClassName);
+
+    Class<?> resolveBeanClass(ClassLoader classLoader) throws ClassNotFoundException;
+
+    boolean hasBeanClass();
 }
