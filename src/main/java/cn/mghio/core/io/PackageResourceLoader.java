@@ -48,18 +48,8 @@ public class PackageResourceLoader {
     }
 
     private Set<File> retrieveMatchingFiles(File rootDir) {
-        if (!rootDir.exists()) {
-            // Skipping, because it not exists
-            return Collections.emptySet();
-        }
-
-        if (!rootDir.isDirectory()) {
-            // Skipping, because it not directory
-            return Collections.emptySet();
-        }
-
-        if (!rootDir.canRead()) {
-            // Skipping, because it can't read
+        if (!rootDir.exists() || !rootDir.isDirectory() || !rootDir.canRead()) {
+            // Skipping, because it not exists or not directory or can't read
             return Collections.emptySet();
         }
 
