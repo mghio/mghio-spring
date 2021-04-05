@@ -34,4 +34,9 @@ public class OrderService {
     System.out.println("place order");
     MessageTracker.addMsg("place order");
   }
+
+  public void placeOrderWithArithmeticException() {
+    int result = 1 / 0;
+    System.out.println(result);
+  }
 }
