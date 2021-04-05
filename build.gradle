@@ -16,7 +16,8 @@ dependencies {
     compile('org.ow2.asm:asm:7.1')
     compile('commons-beanutils:commons-beanutils:1.9.3')
     compile('org.projectlombok:lombok:1.18.16')
+    compile('org.aspectj:aspectjweaver:1.9.6')
 
     testCompile('org.junit.jupiter:junit-jupiter-api:5.7.0')
-    implementation 'junit:junit:4.12'
+    testCompile 'junit:junit:4.12'
 }

@@ -3,6 +3,7 @@ package cn.mghio.beans.factory.support;
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.PropertyValue;
 import cn.mghio.beans.exception.BeanCreationException;
+import cn.mghio.beans.factory.NoSuchBeanDefinitionException;
 import cn.mghio.beans.factory.config.BeanPostProcessor;
 import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
 import cn.mghio.beans.factory.config.DependencyDescriptor;
@@ -50,6 +51,16 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
             return bean;
         }
         return this.doCreateBean(bd);
+    }
+
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        BeanDefinition bd = this.getBeanDefinition(name);
+        if (bd == null) {
+            throw new NoSuchBeanDefinitionException(name);
+        }
+        resolveBeanClass(bd);
+        return bd.getBeanClass();
     }
 
     private Object doCreateBean(BeanDefinition bd) {
@@ -158,7 +169,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
         Class<?> typeToMatch = descriptor.getDependencyType();
         for (BeanDefinition bd : this.beanDefinitionMap.values()) {
             // note: make sure beanClass field has value
-            resolveClass(bd);
+            resolveBeanClass(bd);
             Class<?> beanClass = bd.getBeanClass();
             if (typeToMatch.isAssignableFrom(beanClass)) {
                 return this.getBean(bd.getId());
@@ -168,7 +179,7 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
         return null;
     }
 
-    private void resolveClass(BeanDefinition bd) {
+    private void resolveBeanClass(BeanDefinition bd) {
         if (bd.hasBeanClass()) {
             return;
         }

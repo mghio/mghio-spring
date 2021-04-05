@@ -1,5 +1,6 @@
 package cn.mghio.context.support;
 
+import cn.mghio.beans.factory.NoSuchBeanDefinitionException;
 import cn.mghio.beans.factory.anontation.AutowiredAnnotationProcessor;
 import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
 import cn.mghio.beans.factory.support.DefaultBeanFactory;
@@ -13,7 +14,7 @@ import cn.mghio.core.io.Resource;
  */
 public abstract class AbstractApplicationContext implements ApplicationContext {
 
-    private DefaultBeanFactory beanFactory;
+    private final DefaultBeanFactory beanFactory;
 
     public AbstractApplicationContext(String configFilePath) {
         beanFactory = new DefaultBeanFactory();
@@ -32,6 +33,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
         AutowiredAnnotationProcessor postProcessor = new AutowiredAnnotationProcessor();
         postProcessor.setBeanFactory(beanFactory);
         beanFactory.addBeanPostProcessor(postProcessor);
+    }
+
+    @Override
+    public Class<?> getType(String name) throws NoSuchBeanDefinitionException {
+        return this.beanFactory.getType(name);
     }
 
     protected abstract Resource getResourceByPath(String configFilePath);
