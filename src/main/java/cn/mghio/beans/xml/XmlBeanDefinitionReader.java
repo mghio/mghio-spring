@@ -1,5 +1,6 @@
 package cn.mghio.beans.xml;
 
+import cn.mghio.aop.config.ConfigBeanDefinitionParser;
 import cn.mghio.beans.*;
 import cn.mghio.beans.exception.BeanDefinitionException;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
@@ -34,6 +35,7 @@ public class XmlBeanDefinitionReader {
     public static final String BASE_PACKAGE_ATTRIBUTE = "base-package";
     public static final String BEAN_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
     public static final String CONTEXT_NAMESPACE_URI = "http://www.springframework.org/schema/context";
+    public static final String AOP_NAMESPACE_URI = "http://www.springframework.org/schema/aop";
 
     private BeanDefinitionRegistry registry;
 
@@ -51,10 +53,12 @@ public class XmlBeanDefinitionReader {
             while (iterator.hasNext()) {
                 Element element = iterator.next();
                 String namespaceUri = element.getNamespaceURI();
-                if (this.isDefaultNamespace(namespaceUri)) {
+                if (this.isDefaultNamespace(namespaceUri)) {            // e.g. <bean/>
                     parseDefaultElement(element);
-                } else if (this.isContextNamespace(namespaceUri)) {
+                } else if (this.isContextNamespace(namespaceUri)) {     // e.g. <context/>
                     parseComponentElement(element);
+                } else if (this.isAopContextNamespace(namespaceUri)) {  // e.g. <aop/>
+                    parseAopElement(element);
                 }
             }
         } catch (DocumentException | IOException e) {
@@ -62,10 +66,19 @@ public class XmlBeanDefinitionReader {
         }
     }
 
+    private void parseAopElement(Element element) {
+        ConfigBeanDefinitionParser parser = new ConfigBeanDefinitionParser();
+        parser.parse(element, this.registry);
+    }
+
     private void parseComponentElement(Element element) {
         String basePackages = element.attributeValue(BASE_PACKAGE_ATTRIBUTE);
         ClassPathBeanDefinitionScanner scanner = new ClassPathBeanDefinitionScanner(registry);
         scanner.doScanAndRegistry(basePackages);
+    }
+
+    private boolean isAopContextNamespace(String namespaceUri) {
+        return (StringUtils.hasLength(namespaceUri)) && AOP_NAMESPACE_URI.equals(namespaceUri);
     }
 
     private boolean isContextNamespace(String namespaceUri) {

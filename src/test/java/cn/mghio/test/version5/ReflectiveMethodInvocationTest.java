@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import cn.mghio.aop.aspectj.AspectJAfterReturningAdvice;
 import cn.mghio.aop.aspectj.AspectJAfterThrowingAdvice;
 import cn.mghio.aop.aspectj.AspectJBeforeAdvice;
+import cn.mghio.aop.config.AopInstanceFactory;
 import cn.mghio.aop.framework.ReflectiveMethodInvocation;
+import cn.mghio.beans.factory.BeanFactory;
 import cn.mghio.service.version5.OrderService;
-import cn.mghio.tx.TransactionManager;
 import cn.mghio.utils.MessageTracker;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,37 +22,40 @@ import org.junit.jupiter.api.Test;
  * @author mghio
  * @since 2021-04-05
  */
-public class ReflectiveMethodInvocationTest {
+public class ReflectiveMethodInvocationTest extends AbstractVersion5Test {
 
   private AspectJBeforeAdvice beforeAdvice = null;
   private AspectJAfterReturningAdvice afterAdvice = null;
   private AspectJAfterThrowingAdvice afterThrowingAdvice = null;
   private OrderService orderService = null;
-  private TransactionManager tx;
+  private BeanFactory beanFactory = null;
+  private AopInstanceFactory aopInstanceFactory = null;
 
   @BeforeEach
   public void setUp() throws Exception {
     orderService = new OrderService();
-    tx = new TransactionManager();
+    beanFactory = getBeanFactory("orderservice-version5.xml");
+    aopInstanceFactory = getAopInstanceFactory("tx");
+    aopInstanceFactory.setBeanFactory(beanFactory);
 
     MessageTracker.cleanMsg();
 
     beforeAdvice = new AspectJBeforeAdvice(
-        TransactionManager.class.getMethod("start"),
+        getAdviceMethod("start"),
         null,
-        tx
+        aopInstanceFactory
     );
 
     afterAdvice = new AspectJAfterReturningAdvice(
-        TransactionManager.class.getMethod("commit"),
+        getAdviceMethod("commit"),
         null,
-        tx
+        aopInstanceFactory
     );
 
     afterThrowingAdvice = new AspectJAfterThrowingAdvice(
-        TransactionManager.class.getMethod("rollback"),
+        getAdviceMethod("rollback"),
         null,
-        tx
+        aopInstanceFactory
     );
   }
 

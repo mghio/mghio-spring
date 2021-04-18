@@ -1,5 +1,6 @@
 package cn.mghio.aop.aspectj;
 
+import cn.mghio.aop.config.AopInstanceFactory;
 import java.lang.reflect.Method;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -9,8 +10,9 @@ import org.aopalliance.intercept.MethodInvocation;
  */
 public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice {
 
-  public AspectJAfterReturningAdvice(Method adviceMethod, AspectJExpressionPointcut pc, Object adviceObject) {
-    super(adviceMethod, pc, adviceObject);
+  public AspectJAfterReturningAdvice(Method adviceMethod, AspectJExpressionPointcut pc,
+      AopInstanceFactory aopInstanceFactory) {
+    super(adviceMethod, pc, aopInstanceFactory);
   }
 
   @Override

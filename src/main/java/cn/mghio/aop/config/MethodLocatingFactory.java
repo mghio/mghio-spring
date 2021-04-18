@@ -2,6 +2,8 @@ package cn.mghio.aop.config;
 
 import cn.mghio.beans.factory.BeanFactory;
 import cn.mghio.beans.BeanUtils;
+import cn.mghio.beans.factory.BeanFactoryAware;
+import cn.mghio.beans.factory.FactoryBean;
 import cn.mghio.utils.StringUtils;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -10,7 +12,7 @@ import java.util.Objects;
  * @author mghio
  * @since 2021-04-05
  */
-public class MethodLocatingFactory {
+public class MethodLocatingFactory implements FactoryBean<Method>, BeanFactoryAware {
 
   private String targetBeanName;
 
@@ -26,6 +28,7 @@ public class MethodLocatingFactory {
     this.methodName = methodName;
   }
 
+  @Override
   public void setBeanFactory(BeanFactory beanFactory) {
     if (!StringUtils.hasText(this.targetBeanName)) {
       throw new IllegalArgumentException("Property 'targetBeanName' is required");
@@ -46,7 +49,13 @@ public class MethodLocatingFactory {
     }
   }
 
+  @Override
   public Method getObject() {
     return this.method;
+  }
+
+  @Override
+  public Class<?> getObjectType() {
+    return Method.class;
   }
 }

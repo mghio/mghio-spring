@@ -2,6 +2,7 @@ package cn.mghio.aop.aspectj;
 
 import cn.mghio.aop.Advice;
 import cn.mghio.aop.Pointcut;
+import cn.mghio.aop.config.AopInstanceFactory;
 import java.lang.reflect.Method;
 
 /**
@@ -12,12 +13,12 @@ public abstract class AbstractAspectJAdvice implements Advice {
 
   protected Method adviceMethod;
   protected AspectJExpressionPointcut pc;
-  protected Object adviceObject;
+  protected AopInstanceFactory adviceObjectFactory;
 
-  public AbstractAspectJAdvice(Method adviceMethod, AspectJExpressionPointcut pc, Object adviceObject) {
+  public AbstractAspectJAdvice(Method adviceMethod, AspectJExpressionPointcut pc, AopInstanceFactory adviceObjectFactory) {
     this.adviceMethod = adviceMethod;
     this.pc = pc;
-    this.adviceObject = adviceObject;
+    this.adviceObjectFactory = adviceObjectFactory;
   }
 
   @Override
@@ -26,7 +27,7 @@ public abstract class AbstractAspectJAdvice implements Advice {
   }
 
   protected void invokeAdviceMethod() throws Throwable {
-    adviceMethod.invoke(adviceObject);
+    adviceMethod.invoke(adviceObjectFactory.getAspectInstance());
   }
 
 }
