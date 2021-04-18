@@ -4,15 +4,13 @@ import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.ConstructorArgument;
 import cn.mghio.beans.SimpleTypeConverted;
 import cn.mghio.beans.exception.BeanCreationException;
-import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
-import cn.mghio.beans.factory.support.DefaultBeanFactory;
+import cn.mghio.beans.factory.support.AbstractBeanFactory;
 import cn.mghio.utils.ClassUtils;
 import cn.mghio.utils.StringUtils;
-import lombok.AllArgsConstructor;
-import lombok.ToString;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 /**
  * @author mghio
@@ -22,13 +20,13 @@ import java.util.List;
 @AllArgsConstructor
 public class ConstructorResolver {
 
-    private final DefaultBeanFactory beanFactory;
+    private final AbstractBeanFactory beanFactory;
 
     public Object autowireConstructor(BeanDefinition bd) {
         Constructor<?> constructorToUse = null;
         Object[] argumentToUse = null;
 
-        Class<?> beanClass = null;
+        Class<?> beanClass;
         try {
             beanClass = bd.getBeanClass();
             if (beanClass == null) {

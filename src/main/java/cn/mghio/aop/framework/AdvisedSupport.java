@@ -73,4 +73,9 @@ public class AdvisedSupport implements Advised {
     this.targetObject = targetObject;
   }
 
+  @Override
+  public void addInterface(Class<?> clazz) {
+    this.interfaces.add(clazz);
+  }
+
 }

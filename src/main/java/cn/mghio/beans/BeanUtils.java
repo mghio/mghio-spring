@@ -25,7 +25,7 @@ public abstract class BeanUtils {
     } else if (lastParen > -1 && firstParen == -1) {
       throw new IllegalArgumentException("Invalid method signature '" + signature +
           "': expected opening '(' for args list");
-    } else if (firstParen == -1 && lastParen == -1) {
+    } else if (firstParen == -1) {
       return findMethodWithMinimalParameters(clazz, signature);
     } else {
       String methodName = signature.substring(0, firstParen);

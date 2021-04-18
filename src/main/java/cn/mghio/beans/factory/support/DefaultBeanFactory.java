@@ -3,9 +3,9 @@ package cn.mghio.beans.factory.support;
 import cn.mghio.beans.BeanDefinition;
 import cn.mghio.beans.PropertyValue;
 import cn.mghio.beans.exception.BeanCreationException;
+import cn.mghio.beans.factory.BeanFactoryAware;
 import cn.mghio.beans.factory.NoSuchBeanDefinitionException;
 import cn.mghio.beans.factory.config.BeanPostProcessor;
-import cn.mghio.beans.factory.config.ConfigurableBeanFactory;
 import cn.mghio.beans.factory.config.DependencyDescriptor;
 import cn.mghio.beans.factory.config.InstantiationAwareBeanProcessor;
 import cn.mghio.beans.support.BeanDefinitionRegistry;
@@ -22,8 +22,7 @@ import org.apache.commons.beanutils.BeanUtils;
  * @author mghio
  * @since 2020-10-31
  */
-public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory,
-        BeanDefinitionRegistry {
+public class DefaultBeanFactory extends AbstractBeanFactory implements BeanDefinitionRegistry {
 
     private ClassLoader classLoader = null;
 
@@ -45,12 +44,12 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
         if (bd.isSingleton()) {
             Object bean = this.getSingleton(beanId);
             if (null == bean) {
-                bean = this.doCreateBean(bd);
+                bean = this.createBean(bd);
                 this.registerSingleton(beanId, bean);
             }
             return bean;
         }
-        return this.doCreateBean(bd);
+        return this.createBean(bd);
     }
 
     @Override
@@ -63,11 +62,34 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
         return bd.getBeanClass();
     }
 
-    private Object doCreateBean(BeanDefinition bd) {
+    @Override
+    public List<Object> getBeansByType(Class<?> type) {
+        List<Object> result = new ArrayList<>();
+        List<String> beanIds = this.getBeanIdsByType(type);
+        for (String beanId : beanIds) {
+            result.add(this.getBean(beanId));
+        }
+        return result;
+    }
+
+    private List<String> getBeanIdsByType(Class<?> type) {
+        List<String> result = new ArrayList<>();
+        for (String beanName : this.beanDefinitionMap.keySet()) {
+            if (type.isAssignableFrom(this.getType(beanName))) {
+                result.add(beanName);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Object createBean(BeanDefinition bd) throws BeanCreationException {
         // 1. instantiate bean
         Object bean = instantiateBean(bd);
         // 2. populate bean
         populateBean(bd, bean);
+        // 3. initialize bean
+        bean = initializeBean(bd, bean);
         return bean;
     }
 
@@ -177,6 +199,35 @@ public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements 
         }
 
         return null;
+    }
+
+    protected Object initializeBean(BeanDefinition bd, Object bean) {
+        invokeAwareMethods(bean);
+
+        // TODO: 调用 bean 的 init 方法，目前暂不实现
+
+        // 创建代理
+        if (!bd.isSynthetic()) {
+            return applyBeanPostProcessorAfterInitialization(bean, bd.getId());
+        }
+        return bean;
+    }
+
+    private Object applyBeanPostProcessorAfterInitialization(Object existingBean, String beanName) {
+        Object result = existingBean;
+        for (BeanPostProcessor postProcessor : getBeanPostProcessors()) {
+            result = postProcessor.afterInitialization(result, beanName);
+            if (result == null) {
+                return null;
+            }
+        }
+        return result;
+    }
+
+    private void invokeAwareMethods(Object bean) {
+        if (bean instanceof BeanFactoryAware) {
+            ((BeanFactoryAware) bean).setBeanFactory(this);
+        }
     }
 
     private void resolveBeanClass(BeanDefinition bd) {

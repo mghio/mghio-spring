@@ -52,6 +52,7 @@ public class ConfigBeanDefinitionParser {
     List<BeanDefinition> beanDefinitions = new ArrayList<>();
     List<RuntimeBeanReference> beanReferences = new ArrayList<>();
 
+    // parse advice
     List<Element> elements = aspectElement.elements();
     boolean adviceFoundAlready = false;
     for (Element element : elements) {
@@ -69,6 +70,7 @@ public class ConfigBeanDefinitionParser {
       }
     }
 
+    // parse pointcut
     List<Element> pointcuts = aspectElement.elements(POINTCUT);
     for (Element pointcut : pointcuts) {
       parsePointcut(pointcut, registry);

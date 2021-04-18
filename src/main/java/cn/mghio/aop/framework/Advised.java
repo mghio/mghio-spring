@@ -20,6 +20,8 @@ public interface Advised {
 
   List<Advice> getAdvices(Method method);
 
+  void addInterface(Class<?> clazz);
+
   /*------------------- JDK Proxy ------------------*/
 
   Object getTargetObject();
