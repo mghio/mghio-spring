@@ -62,7 +62,7 @@ public class AspectJAutoProxyCreator implements BeanPostProcessor {
       // CGLIB 代理
       proxyFactory = new CglibProxyFactory(config);
     } else {
-      // TODO: JDK 动态代理
+      // TODO(mghio): JDK dynamic proxy ...
 
     }
 
