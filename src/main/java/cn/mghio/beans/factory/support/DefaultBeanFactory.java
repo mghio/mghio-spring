@@ -204,7 +204,7 @@ public class DefaultBeanFactory extends AbstractBeanFactory implements BeanDefin
     protected Object initializeBean(BeanDefinition bd, Object bean) {
         invokeAwareMethods(bean);
 
-        // TODO: 调用 bean 的 init 方法，目前暂不实现
+        // TODO(mghio): 调用 bean 的 init 方法，目前暂不实现
 
         // 创建代理
         if (!bd.isSynthetic()) {

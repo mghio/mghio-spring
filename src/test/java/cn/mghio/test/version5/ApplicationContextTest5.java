@@ -31,7 +31,6 @@ public class ApplicationContextTest5 {
     assertNotNull(orderService.getTradeDao());
     orderService.placeOrder();
 
-    // 这里如何判断 TransactionManager.start()、TransactionManager.commit()、TransactionManager.rollback() 方法被调用
     List<String> msgs = MessageTracker.getMsgs();
     assertEquals(3, msgs.size());
     assertEquals("start tx", msgs.get(0));
