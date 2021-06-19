@@ -12,7 +12,7 @@ A simple version of the Spring framework ([IOC](https://docs.spring.io/spring-fr
 - [7. 如何实现一个简易版的 Spring - 如何实现 AOP（终结篇）](https://www.mghio.cn/post/64d741b0.html)
 
 # contact
-Personal Blog：[mghio](https://www.mghio.cn)
+Personal Blog：[mghio's Blog](https://www.mghio.cn)
 
 Official Account：mghio
 
