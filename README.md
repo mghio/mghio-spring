@@ -14,6 +14,4 @@ A simple version of the Spring framework ([IOC](https://docs.spring.io/spring-fr
 # contact
 Personal Blog：[mghio's Blog](https://www.mghio.cn)
 
-Official Account：mghio
-
-Wechat ID：mghiodev
+Wechat Official Account：[mghio](https://mp.weixin.qq.com/s/us0o0pUf7OoJt5aihlxfYA)
